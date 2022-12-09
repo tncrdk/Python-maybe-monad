@@ -97,11 +97,15 @@ if __name__ == "__main__":
     a = Some(3)
 
     def foo(i: int) -> Maybe[int]:
-        if i != 8:
+        if i != 7:
             return Some(i + 5)
         return Nothing
 
-    b = a >> foo >> foo >> foo
+    b = a >> foo >> foo >> foo >> foo
     print(b)
-    c = b.unwrap()
-    print(c)
+
+    match b:
+        case Some(value):
+            print(value)
+        case _:
+            print("hei")
