@@ -63,7 +63,6 @@ class Some(Maybe, Generic[T]):
 
     def __init__(self, value: T) -> None:
         self._innervalue: T = value
-        self.other = None
 
     def __rshift__(self, func: Callable[[T], Maybe[S]]) -> Maybe[S]:
         return func(self._innervalue)
