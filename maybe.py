@@ -1,6 +1,7 @@
 from __future__ import annotations
-from typing import Generic, TypeAlias, Callable, TypeVar
+from typing import Generic, Callable, TypeVar
 from abc import ABC
+from exceptions import UnwrapError
 
 T = TypeVar("T")
 S = TypeVar("S")
@@ -37,7 +38,7 @@ class _Nothing(Maybe, Generic[T]):
         return self
 
     def unwrap(self) -> T:
-        raise Exception("Unwrapped empty value")
+        raise UnwrapError("Unwrapped empty value")
 
     def unwrap_or(self, default: T) -> T:
         return default
@@ -46,7 +47,7 @@ class _Nothing(Maybe, Generic[T]):
         return func()
 
     def expect(self, err_msg: str) -> T:
-        raise Exception(err_msg)
+        raise UnwrapError(err_msg) # TODO Endre error-typen
 
     def is_none(self) -> bool:
         return True
@@ -95,16 +96,15 @@ if __name__ == "__main__":
     a = Some(3)
 
     def foo(i: int) -> Maybe[int]:
-        if i != 8:
+        if i != 7:
             return Some(i + 5)
         return Nothing
 
-    # b = a >> foo >> foo >> foo
-    # print(b)
-    # c = b.unwrap()
-    # print(c)
-    match a:
+    b = a >> foo >> foo >> foo >> foo
+    print(b)
+
+    match b:
         case Some(value):
             print(value)
-        case other:
-            print("not")
+        case _:
+            print("hei")
