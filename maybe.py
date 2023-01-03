@@ -8,6 +8,9 @@ S = TypeVar("S")
 
 
 class Maybe(ABC, Generic[T]):
+    def __init__(self) -> None:
+        self.empty = ...
+
     def __rshift__(self, func: Callable[[T], Maybe[S]]) -> Maybe[S]:
         ...
 
@@ -34,6 +37,9 @@ class Maybe(ABC, Generic[T]):
 
 
 class _Nothing(Maybe, Generic[T]):
+    def __init__(self) -> None:
+        self.empty = True
+
     def __rshift__(self, func: Callable[[T], Maybe[S]]) -> Maybe[S]:
         return self
 
@@ -64,7 +70,7 @@ class Some(Maybe, Generic[T]):
 
     def __init__(self, value: T) -> None:
         self._innervalue: T = value
-        self.other = None
+        self.empty = False
 
     def __rshift__(self, func: Callable[[T], Maybe[S]]) -> Maybe[S]:
         return func(self._innervalue)
@@ -97,15 +103,16 @@ if __name__ == "__main__":
     a = Some(3)
 
     def foo(i: int) -> Maybe[int]:
-        if i != 7:
+        if i != 8:
             return Some(i + 5)
         return Nothing
 
     b = a >> foo >> foo >> foo >> foo
-    print(b)
 
     match b:
         case Some(value):
             print(value)
+        case b.empty: # TODO Fiks
+            print("Inne")
         case _:
             print("hei")
