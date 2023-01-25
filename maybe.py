@@ -88,7 +88,7 @@ class Some(Maybe, Generic[T]):
 
     def __str__(self) -> str:
         return f"Some({self._innervalue})"
-
+        
 
 Nothing = _Nothing()
 
