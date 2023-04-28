@@ -53,7 +53,7 @@ class _Nothing(Maybe, Generic[T]):
         return func()
 
     def expect(self, err_msg: str) -> T:
-        raise UnwrapError(err_msg) # TODO Endre error-typen
+        raise UnwrapError(err_msg)  # TODO Endre error-typen
 
     def is_none(self) -> bool:
         return True
@@ -95,24 +95,27 @@ class Some(Maybe, Generic[T]):
 
     def __str__(self) -> str:
         return f"Some({self._innervalue})"
-        
+
 
 Nothing = _Nothing()
 
 if __name__ == "__main__":
-    a = Some(3)
+    a = Some(2)
+    condition = 9
 
     def foo(i: int) -> Maybe[int]:
-        if i != 8:
-            return Some(i + 5)
+        if i != 7:
+            return Some(i + 1)
         return Nothing
 
-    b = a >> foo >> foo >> foo >> foo
+    b = a >> foo >> foo
 
     match b:
+        case Some(4 | 9):
+            print("first")
+        case Some(value) if value == condition:
+            print("condition")
         case Some(value):
             print(value)
-        case b.empty: # TODO Fiks
+        case Nothing:
             print("Inne")
-        case _:
-            print("hei")
